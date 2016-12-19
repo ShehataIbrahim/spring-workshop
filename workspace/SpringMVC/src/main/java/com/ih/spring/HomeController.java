@@ -25,7 +25,8 @@ public class HomeController {
 		return "form";
 	}
 	@RequestMapping(value = "/result", method = RequestMethod.GET)
-	public String welcome(Locale locale, Model model,@ModelAttribute("user") User user) {
+	public String welcome(Locale locale,
+			Model model,@ModelAttribute("user") User user) {
 		model.addAttribute("userData", user);
 		return "result";
 	}
