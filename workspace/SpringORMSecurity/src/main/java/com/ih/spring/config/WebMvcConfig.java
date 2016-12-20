@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import javax.sql.DataSource;
 
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -14,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -43,7 +42,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 	private String password;
 	@Value("${hibernate.dialect}")
 	private String dialect;
-
+	
 	@Bean
 	public ViewResolver viewResolver() {
 		InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
@@ -55,6 +54,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 
 	@Bean(name = "dataSource")
 	public DriverManagerDataSource dataSource() {
+		
 		DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
 		driverManagerDataSource.setDriverClassName(driverClass);
 		driverManagerDataSource.setUrl(connectionUrl);
@@ -62,20 +62,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		driverManagerDataSource.setPassword(password);
 		return driverManagerDataSource;
 	}
-
-	/*
-	 * public SessionFactory sessionFactory(DataSource dataSource) {
-	 * 
-	 * LocalSessionFactoryBuilder sessionBuilder = new
-	 * LocalSessionFactoryBuilder(dataSource);
-	 * sessionBuilder.addAnnotatedClasses(SecurityUser.class);
-	 * sessionBuilder.setProperties(getHibernateProperties()); SessionFactory
-	 * factory=sessionBuilder.buildSessionFactory(); factory.openSession();
-	 * return factory; }
-	 * 
-	 * @Autowired
-	 * 
-	 */
 	@Bean(name = "sessionFactory")
 	@Autowired
 
@@ -84,9 +70,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		bean.setDataSource(dataSource);
 		bean.setHibernateProperties(getHibernateProperties());
 		bean.setAnnotatedClasses(SecurityUser.class);
-		/*logger.info("**********************************"+bean.getConfiguration());
-		logger.info("**********************************"+bean.getObject());
-		SessionFactory factory=bean.getConfiguration().buildSessionFactory();*/
 		return bean;
 
 	}
@@ -98,14 +81,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 		properties.put("hibernate.current_session_context_class", "thread");
 		return properties;
 	}
-	// @Bean(name = "transactionTemplate")
-	// public TransactionTemplate transactionTemplate()
-	// {
-	// HibernateTransactionManager manager=new
-	// HibernateTransactionManager(sessionFactory());
-	// return new TransactionTemplate(manager);
-	// }
-	//
 
 	@Bean(name = "permission")
 	public Checker permission() {
@@ -121,7 +96,6 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter {
 						return true;
 				}
 				return false;
-				// return details.getAuthorities().contains(customArg);
 			} else {
 				return false;
 			}
